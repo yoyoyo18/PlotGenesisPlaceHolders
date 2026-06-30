@@ -5,9 +5,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import java.util.Collection;
-import java.util.Set;
-
 public class GensPlaceholder extends PlaceholderExpansion {
 
     private final PlotGenPlaceholder plugin;
@@ -39,9 +36,7 @@ public class GensPlaceholder extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String params) {
 
-        if (player == null || !player.isOnline()) {
-            return "0/0";
-        }
+        if (player == null || !player.isOnline()) return "0/0";
 
         Player p = player.getPlayer();
         if (p == null) return "0/0";
