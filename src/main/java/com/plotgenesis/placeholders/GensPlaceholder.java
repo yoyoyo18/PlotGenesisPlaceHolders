@@ -1,47 +1,32 @@
-package com.plotgenesis.placeholders;
+package me.plotgen;
 
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class GensPlaceholder extends PlaceholderExpansion {
+public class PlotGenPlaceholder extends JavaPlugin {
 
-    private final JavaPlugin plugin;
-
-    public GensPlaceholder(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
+    private static PlotGenPlaceholder instance;
 
     @Override
-    public String getIdentifier() {
-        return "plotgen";
-    }
+    public void onEnable() {
+        instance = this;
 
-    @Override
-    public String getAuthor() {
-        return "CoolSun";
-    }
-
-    @Override
-    public String getVersion() {
-        return "1.0";
-    }
-
-    @Override
-    public boolean persist() {
-        return true;
-    }
-
-    @Override
-    public String onPlaceholderRequest(Player player, String params) {
-
-        if (player == null) return "0/0";
-
-        if (params.equalsIgnoreCase("gens")) {
-            // We'll add the actual Skript variable reading next
-            return "0/15";
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) {
+            getLogger().severe("PlaceholderAPI not found! Disabling plugin...");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
-        return null;
+        new GensPlaceholder(this).register();
+
+        getLogger().info("PlotGenPlaceholder enabled successfully!");
+    }
+
+    @Override
+    public void onDisable() {
+        getLogger().info("PlotGenPlaceholder disabled.");
+    }
+
+    public static PlotGenPlaceholder getInstance() {
+        return instance;
     }
 }
