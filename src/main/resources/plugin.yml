@@ -1,0 +1,9 @@
+name: PlotGenesisPlaceholders
+version: '1.0'
+main: com.plotgenesis.placeholders.Main
+api-version: '1.21'
+author: Cool Sun
+depend:
+  - PlaceholderAPI
+  - Skript
+description: Custom placeholders for Plot Genesis
