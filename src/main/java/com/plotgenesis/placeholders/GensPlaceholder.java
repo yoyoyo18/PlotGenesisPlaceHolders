@@ -1,10 +1,11 @@
-package me.plotgen;
+package com.plotgenesis.placeholders;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import java.util.Collection;
 import java.util.Set;
 
 public class GensPlaceholder extends PlaceholderExpansion {
@@ -22,7 +23,7 @@ public class GensPlaceholder extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return "PlotGen";
+        return "PlotGenesis";
     }
 
     @Override
@@ -36,66 +37,27 @@ public class GensPlaceholder extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer offlinePlayer, String params) {
+    public String onRequest(OfflinePlayer player, String params) {
 
-        if (offlinePlayer == null || !offlinePlayer.isOnline()) {
+        if (player == null || !player.isOnline()) {
             return "0/0";
         }
 
-        Player player = offlinePlayer.getPlayer();
-        if (player == null) return "0/0";
+        Player p = player.getPlayer();
+        if (p == null) return "0/0";
 
-        // === GET PLACED GENERATORS FROM SKRIPT ===
-        // Change this path if your Skript variable is different
-        int placed = getPlacedGenerators(player);
-
-        // === GET LIMIT FROM PERMISSIONS ===
-        int limit = getGeneratorLimit(player);
+        int placed = 0;
+        int limit = getLimit(p);
 
         return placed + "/" + limit;
     }
 
-    /**
-     * Reads Skript variable for placed gens
-     * EDIT THIS LINE IF YOUR VARIABLE NAME IS DIFFERENT
-     */
-    private int getPlacedGenerators(Player player) {
-        try {
-            // This requires Skript API being accessible
-            Object result = ch.njol.skript.variables.Variables.getVariable(
-                    "gens::" + player.getUniqueId() + "::placed-list",
-                    player,
-                    false
-            );
+    private int getLimit(Player p) {
 
-            if (result instanceof java.util.Collection<?>) {
-                return ((java.util.Collection<?>) result).size();
-            }
-
-            if (result == null) return 0;
-
-        } catch (Exception e) {
-            plugin.getLogger().warning("Failed to read Skript gens for " + player.getName());
-        }
-
-        return 0;
-    }
-
-    /**
-     * Determines limit from permission ranks
-     */
-    private int getGeneratorLimit(Player player) {
-
-        Set<PermissionAttachmentInfo> perms = player.getEffectivePermissions();
-
-        int limit = 15; // default
-
-        for (PermissionAttachmentInfo perm : perms) {
-            String p = perm.getPermission();
-
+        for (PermissionAttachmentInfo perm : p.getEffectivePermissions()) {
             if (!perm.getValue()) continue;
 
-            switch (p.toLowerCase()) {
+            switch (perm.getPermission().toLowerCase()) {
                 case "2ram": return 25;
                 case "4ram": return 50;
                 case "8ram": return 65;
@@ -104,6 +66,6 @@ public class GensPlaceholder extends PlaceholderExpansion {
             }
         }
 
-        return limit;
+        return 15;
     }
 }
